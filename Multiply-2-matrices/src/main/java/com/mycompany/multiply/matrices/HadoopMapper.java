@@ -9,19 +9,21 @@ public class HadoopMapper extends Mapper<LongWritable, Text, Text, Text> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        String[] elements = value.toString().split("\t");
-        String matrixId = elements[0];
-        String[] rowData = elements[1].split(",");
+        String[] elements = value.toString().split(",\\s*");
 
-        for (int i = 0; i < rowData.length; i++) {
-            if (matrixId.equals("A")) {
-                for (int k = 0; k < rowData.length; k++) {
-                    context.write(new Text(String.valueOf(i)), new Text("A," + rowData[k] + "," + k));
-                }
-            } else if (matrixId.equals("B")) {
-                for (int k = 0; k < rowData.length; k++) {
-                    context.write(new Text(String.valueOf(i)), new Text("B," + rowData[k] + "," + i));
-                }
+        String matrixName = elements[0];
+
+        int row = Integer.parseInt(elements[1]);
+        int col = Integer.parseInt(elements[2]);
+        int elementValue = Integer.parseInt(elements[3]);
+
+        if (matrixName.equals("A")) {
+            for (int k = 0; k < col; k++) {
+                context.write(new Text(col + "," + k), new Text("A," + row + "," + elementValue));
+            }
+        } else {
+            for (int i = 0; i < row; i++) {
+                context.write(new Text(i + "," + row), new Text("B," + col + "," + elementValue));
             }
         }
     }

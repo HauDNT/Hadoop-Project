@@ -1,26 +1,35 @@
 package com.mycompany.multiply.matrices;
 
+import java.util.*;
 import java.io.IOException;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class HadoopReducer extends Reducer<Text, Text, Text, Text> {
+public class HadoopReducer extends Reducer<Text, Text, Text, IntWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        int[] A = new int[2];
-        int[] B = new int[2];
-        
+        List<Integer> A_values = new ArrayList<>();
+        List<Integer> B_values = new ArrayList<>();
+
         for (Text val : values) {
             String[] elements = val.toString().split(",");
-            if (elements[0].equals("A")) {
-                A[Integer.parseInt(elements[2])] = Integer.parseInt(elements[1]);
+            String matrixName = elements[0];
+            int index = Integer.parseInt(elements[1]);
+            int value = Integer.parseInt(elements[2]);
+
+            if (matrixName.equals("A")) {
+                A_values.add(value);
             } else {
-                B[Integer.parseInt(elements[2])] = Integer.parseInt(elements[1]);
+                B_values.add(value);
             }
         }
-        
-        int result = A[0] * B[0] + A[1] * B[1];
-        context.write(new Text(key.toString()), new Text(String.valueOf(result)));   
+
+        // Nhân các giá trị từ A và B
+        for (int a : A_values) {
+            for (int b : B_values) {
+                context.write(new Text(key.toString()), new IntWritable(a * b));
+            }
+        }
     }
 }
