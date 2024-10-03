@@ -1,1 +1,1 @@
-hadoop jar D:\Workspace\Hadoop-Project\Multiply-2-matrices\target\Multiply-2-matrices-1.0-SNAPSHOT.jar /input /output 2
+hadoop jar D:\Workspace\Hadoop-Project\Multiply-2-matrices\target\Multiply-2-matrices-1.0-SNAPSHOT.jar /input/MatricesData100x100.csv /output/MatricesData100x100.csv 100

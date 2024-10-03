@@ -1,0 +1,3 @@
+com\mycompany\multiply\matrices\HadoopMapper.class
+com\mycompany\multiply\matrices\HadoopReducer.class
+com\mycompany\multiply\matrices\Multiply2Matrices.class

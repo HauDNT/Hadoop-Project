@@ -16,15 +16,22 @@ public class HadoopMapper extends Mapper<LongWritable, Text, Text, Text> {
         int row = Integer.parseInt(elements[1]);
         int col = Integer.parseInt(elements[2]);
         int elementValue = Integer.parseInt(elements[3]);
+        int numColsB = context.getConfiguration().getInt("numColsB", -1);
 
-        if (matrixName.equals("A")) {
-            for (int k = 0; k < col; k++) {
-                context.write(new Text(col + "," + k), new Text("A," + row + "," + elementValue));
-            }
-        } else {
-            for (int i = 0; i < row; i++) {
-                context.write(new Text(i + "," + row), new Text("B," + col + "," + elementValue));
-            }
+        switch (matrixName) {
+            case "A":
+                // Ghi dữ liệu của ma trận A
+                for (int k = 0; k < numColsB; k++) { // Chạy qua số cột của ma trận B
+                    context.write(new Text(row + "," + k), new Text("A," + col + "," + elementValue));
+                }   break;
+            case "B":
+                // Ghi dữ liệu của ma trận B
+                for (int i = 0; i < numColsB; i++) { // Chạy qua số hàng của ma trận A
+                    context.write(new Text(i + "," + col), new Text("B," + row + "," + elementValue));
+                }   break;
+            default:
+                context.write(new Text("NaN, NaN"), new Text("NaN, NaN, NaN"));
+                break;
         }
     }
 }
